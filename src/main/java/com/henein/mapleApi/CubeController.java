@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public class CubeController {
 
     private final CubeService cubeService;
     public static int tryCount = 0;
-    @GetMapping("/cube") //비동기 작업을 나타내는 mono다
+    @PostMapping("/cube") //비동기 작업을 나타내는 mono다
     public List<String> getUserInfo (@RequestBody UserMapleApi userMapleApi){
         log.info("cube 접속");
         LocalDate targetDate = LocalDate.now().minus(1,ChronoUnit.DAYS);
