@@ -5,6 +5,7 @@ import com.henein.mapleApi.dto.CubeHistoryResponseDto;
 import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,7 +13,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 
@@ -21,6 +24,7 @@ import static com.henein.mapleApi.CubeController.tryCount;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CubeService {
     private final WebClient webClient;
 
@@ -33,7 +37,7 @@ public class CubeService {
         List<UserNameResponseDto> userNameList = new ArrayList<>();
         boolean cursor;
         do {
-
+            log.info(String.valueOf(LocalTime.now()));
             Mono<Map<String, Object>> target = this.webClient.get()
                     .uri(url)
                     .header(HttpHeaders.AUTHORIZATION, userMapleApi.getUserApi())
