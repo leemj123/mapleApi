@@ -15,6 +15,9 @@ public class WebSecurutyConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .csrf().disable()
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .and()
                 .formLogin().disable();
     }
 }
