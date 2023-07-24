@@ -28,11 +28,10 @@ import static com.henein.mapleApi.CubeController.tryCount;
 public class CubeService {
     private final WebClient webClient;
 
-
     @Transactional
     public List<UserNameResponseDto> getUserNameOnCube(UserMapleApi userMapleApi, LocalDate date) {
 
-        String defaultUrl = "cube-use-results?count=1000&";
+        String defaultUrl = "cube-use-results?count=100&";
         String url = defaultUrl +"date="+date;
         List<UserNameResponseDto> userNameList = new ArrayList<>();
         boolean cursor;
