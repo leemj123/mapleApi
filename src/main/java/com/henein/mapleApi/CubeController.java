@@ -46,5 +46,10 @@ public class CubeController {
         ChessDto chessDto = new ChessDto();
         return chessDto;
     }
+    @PostMapping()
+    public String b(@RequestBody ChessDto chessDto) {
+        log.info(chessDto.getId() + "+" + chessDto.getX()+ "+" + chessDto.getY());
+        return "재욱아 너가 보낸것의 x,y 값은: " + (chessDto.getX()+ chessDto.getY());
+    }
 
 }
