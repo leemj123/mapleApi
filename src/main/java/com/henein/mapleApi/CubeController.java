@@ -2,7 +2,7 @@ package com.henein.mapleApi;
 
 import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
-import lombok.Getter;
+import com.henein.mapleApi.dto.ChessDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +42,9 @@ public class CubeController {
         return result;
     }
     @GetMapping()
-    public String a (){
-        return "접속 성공";
+    public ChessDto a (){
+        ChessDto chessDto = new ChessDto();
+        return chessDto;
     }
 
 }
