@@ -44,6 +44,7 @@ public class CubeController {
     @GetMapping()
     public ChessDto a (){
         ChessDto chessDto = new ChessDto();
+        log.info("들어왔어용");
         return chessDto;
     }
     @PostMapping()
