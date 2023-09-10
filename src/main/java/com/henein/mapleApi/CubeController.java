@@ -4,11 +4,11 @@ import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
 import com.henein.mapleApi.dto.ChessDto;
 import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -22,8 +22,13 @@ public class CubeController {
 
     private final CubeService cubeService;
     public static int tryCount = 0;
+    @Value("${apikey}")
+    private String apiKey;
     @PostMapping("/cube") //비동기 작업을 나타내는 mono다
-    public List<String> getUserInfo (@RequestBody UserMapleApi userMapleApi){
+    public List<String> getUserInfo (@RequestBody UserMapleApi userMapleApi, @RequestParam String key){
+        if (!key.matches(apiKey)) {
+            throw new RuntimeException();
+        }
         log.info("cube 접속");
         LocalDate targetDate = LocalDate.now().minus(1,ChronoUnit.DAYS);
         LocalDate limitDate = targetDate.minus(49, ChronoUnit.DAYS);
