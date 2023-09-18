@@ -19,7 +19,7 @@ public class GameController {
         return String.valueOf(UUID.randomUUID());
     }
     @PostMapping("/init")
-    public PieceInfoDto[][] gameSetting(@RequestHeader("Room")String roomId){
+    public List<PieceInfoDto> gameSetting(@RequestHeader("Room")String roomId){
         log.info("init 들어옴"+roomId);
         return gameMainService.setting2DChessBoard(roomId);
     }
