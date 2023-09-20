@@ -34,6 +34,7 @@ public class CubeController {
         List<UserNameResponseDto> userNamesList = new ArrayList<>();
 
         while (!(targetDate.isBefore(userMapleApi.getPastDay()))) {
+            log.info(targetDate.toString());
             List<UserNameResponseDto> userName = cubeService.getUserNameOnCube(userMapleApi,targetDate);
             userNamesList.addAll(userName);
             targetDate = targetDate.minus(1, ChronoUnit.DAYS);
@@ -43,6 +44,9 @@ public class CubeController {
         .map(UserNameResponseDto::getCharacter_name)
         .distinct()
         .collect(Collectors.toList());
+        log.info(result.get(0));
+        log.info(result.get(1));
+        log.info(result.get(2));
         return result;
     }
     @GetMapping()
