@@ -7,6 +7,6 @@ import java.time.LocalDate;
 @Getter
 public class UserMapleApi {
     private String userApi;
-    private LocalDate startDay;
-    private LocalDate endDay;
+    private LocalDate recentDay;
+    private LocalDate pastDay;
 }

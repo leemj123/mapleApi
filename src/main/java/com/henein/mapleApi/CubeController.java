@@ -30,10 +30,10 @@ public class CubeController {
             throw new RuntimeException();
         }
         log.info("cube 접속");
-        LocalDate targetDate = userMapleApi.getStartDay();
+        LocalDate targetDate = userMapleApi.getRecentDay();
         List<UserNameResponseDto> userNamesList = new ArrayList<>();
 
-        while (!(targetDate.isBefore(userMapleApi.getEndDay()))) {
+        while (!(targetDate.isBefore(userMapleApi.getPastDay()))) {
             List<UserNameResponseDto> userName = cubeService.getUserNameOnCube(userMapleApi,targetDate);
             userNamesList.addAll(userName);
             targetDate = targetDate.minus(1, ChronoUnit.DAYS);
