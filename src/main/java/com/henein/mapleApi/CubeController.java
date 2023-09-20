@@ -44,9 +44,7 @@ public class CubeController {
         .map(UserNameResponseDto::getCharacter_name)
         .distinct()
         .collect(Collectors.toList());
-        log.info(result.get(0));
-        log.info(result.get(1));
-        log.info(result.get(2));
+
         return result;
     }
     @GetMapping()
