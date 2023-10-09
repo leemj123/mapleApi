@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/game")
@@ -14,9 +13,17 @@ import java.util.UUID;
 public class GameController {
     private final GameMainService gameMainService;
     @GetMapping("/roomset")
-    public String roomSet(){
-        log.info("들어옴");
-        return String.valueOf(UUID.randomUUID());
+    public HashMap<String, String> roomSet(){
+        boolean key = new Random().nextBoolean();
+        HashMap<String,String> map = new HashMap<>();
+
+        if (key) {
+            map.put("white",String.valueOf(UUID.randomUUID()));
+        } else {
+            map.put("black",String.valueOf(UUID.randomUUID()));
+        }
+
+        return map;
     }
     @PostMapping("/init")
     public List<PieceInfoDto> gameSetting(@RequestHeader("Room")String roomId){
