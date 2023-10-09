@@ -13,17 +13,15 @@ import java.util.*;
 public class GameController {
     private final GameMainService gameMainService;
     @GetMapping("/roomset")
-    public HashMap<String, String> roomSet(){
+    public RoomSet roomSet(){
         boolean key = new Random().nextBoolean();
-        HashMap<String,String> map = new HashMap<>();
-
         if (key) {
-            map.put("white",String.valueOf(UUID.randomUUID()));
+            return new RoomSet(PlayerRole.White,String.valueOf(UUID.randomUUID()));
         } else {
-            map.put("black",String.valueOf(UUID.randomUUID()));
+            return new RoomSet(PlayerRole.Black,String.valueOf(UUID.randomUUID()));
         }
 
-        return map;
+
     }
     @PostMapping("/init")
     public List<PieceInfoDto> gameSetting(@RequestHeader("Room")String roomId){
