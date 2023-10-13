@@ -16,12 +16,12 @@ public class Bishop extends Piece{
     }
 
     @Override
-    public List<Point> getValidMoveList(PieceInfoDto pieceInfoDto) {
+    public List<Point> getValidMoveList(List<PieceInfoDto> allInGamePieceList) {
         return null;
     }
 
     @Override
-    public boolean isValidMove(PieceInfoDto pieceInfoDto) {
+    public boolean isValidMove(PieceInfoDto pieceInfoDto, List<PieceInfoDto> allInGamePieceList) {
         return false;
     }
 

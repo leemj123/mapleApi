@@ -1,8 +1,8 @@
 package com.henein.mapleApi.chess;
 
-
 import lombok.Getter;
 
+import java.awt.*;
 import java.util.List;
 
 @Getter
@@ -11,7 +11,10 @@ public abstract class Piece {
     private int id;
     private int x;
     private int y;
-    private boolean hasMoved;
+    static final int MAX_X = 8;
+    static final int MAX_Y = 8;
+    private Color color;
+    public boolean hasMoved;
 
     public Piece(int id, int x, int y) {
         this.id = id;
@@ -23,11 +26,22 @@ public abstract class Piece {
         this.id = pieceInfoDto.getId();
         this.x = pieceInfoDto.getX();
         this.y = pieceInfoDto.getY();
+        this.hasMoved = pieceInfoDto.isHasMoved();
+        this.color = Piece.getColorFromId(pieceInfoDto.getId());
     }
 
-    public abstract List<Point> getValidMoveList(PieceInfoDto pieceInfoDto);
 
-    public abstract boolean isValidMove(PieceInfoDto pieceInfoDto);
+    public abstract List<Point> getValidMoveList(List<PieceInfoDto> allInGamePieceList);
+
+    public abstract boolean isValidMove(PieceInfoDto pieceInfoDto, List<PieceInfoDto> allInGamePieceList);
 
     public abstract void move();
+
+    public static Color getColorFromId(int id){
+        if (id < 17) {
+            return Color.Black;
+        } else {
+            return Color.White;
+        }
+    }
 }

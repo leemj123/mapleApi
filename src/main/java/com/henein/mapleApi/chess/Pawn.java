@@ -17,45 +17,65 @@ public class Pawn extends Piece{
     }
 
     @Override
-    public List<Point> getValidMoveList(PieceInfoDto pieceInfoDto) {
+    public List<Point> getValidMoveList(List<PieceInfoDto> allInGamePieceList) {
         List<Point> validMoves = new ArrayList<>();
 
-        // 흑백 판별
         int direction;
-        if (9<= pieceInfoDto.getId() && pieceInfoDto.getId() <= 16) { //흑
+
+        if (this.getColor().equals(Color.Black)) { //흑
             direction = 1;
         }
-        else if(17 <= pieceInfoDto.getId() && pieceInfoDto.getId() <= 24) {// 백
+        else if(this.getColor().equals(Color.White)) {// 백
             direction = -1;
-        } else {
-            throw new RuntimeException("this is not Pawn");
+        }
+        else throw new RuntimeException();
+
+        // 한 칸 전진
+        Point oneStepMove = new Point(this.getX(), this.getY() + direction);
+        if (isSquareEmpty(oneStepMove, allInGamePieceList) && isWithinBounds(oneStepMove)) {
+            validMoves.add(oneStepMove);
+
+            // 두 칸 전진
+            if (!this.isHasMoved()) {
+                Point twoStepMove = new Point(this.getX(), this.getY() + (2 * direction));
+                if (isSquareEmpty(twoStepMove, allInGamePieceList) && isWithinBounds(twoStepMove)) {
+                    validMoves.add(twoStepMove);
+                }
+            }
         }
 
-        //한칸 전진
-        Point oneStepMove = new Point(pieceInfoDto.getX(), pieceInfoDto.getY() + direction);
-        validMoves.add(oneStepMove);
-
-        //두칸 전진
-        if (!(this.isHasMoved())) {
-            Point twoStepMove = new Point(pieceInfoDto.getX(), pieceInfoDto.getY() + (2*direction));
-            validMoves.add(twoStepMove);
+        // 대각선 움직임
+        for (int dx = -1; dx <= 1; dx += 2) {
+            Point diagonalMove = new Point(this.getX() + dx, this.getY() + direction);
+            if (isEnemyPiece(diagonalMove, allInGamePieceList) && isWithinBounds(diagonalMove)) {
+                validMoves.add(diagonalMove);
+            }
         }
-        //대각선에 기물있는지 판별
-
 
         return validMoves;
     }
 
     @Override
-    public boolean isValidMove(PieceInfoDto pieceInfoDto) {
-        List<Point> validMoves = getValidMoveList(pieceInfoDto);
-        Point piecePoint = new Point(pieceInfoDto);
-        return validMoves.contains(piecePoint); // 리스트에서 검사하여 있으면 true
+    public boolean isValidMove(PieceInfoDto pieceInfoDto, List<PieceInfoDto> allInGamePieceList) {
+        List<Point> pointList = this.getValidMoveList(allInGamePieceList);
+        return pointList.stream().anyMatch(piece-> piece.getX() == pieceInfoDto.getX() && piece.getY() == pieceInfoDto.getY());
     }
 
     @Override
     public void move() {
+
+    }
+    private boolean isSquareEmpty(Point point, List<PieceInfoDto> allInGamePieceList) {
+        return allInGamePieceList.stream()
+                .noneMatch(piece -> piece.getX() == point.getX() && piece.getY() == point.getY());
     }
 
+    private boolean isEnemyPiece(Point point, List<PieceInfoDto> allInGamePieceList) {
+        return allInGamePieceList.stream()
+                .anyMatch(piece -> piece.getX() == point.getX() && piece.getY() == point.getY() && !getColor().equals(Piece.getColorFromId(piece.getId())));
+    }
 
+    private boolean isWithinBounds(Point point) {
+        return point.getX() >= 0 && point.getX() < MAX_X && point.getY() >= 0 && point.getY() < MAX_Y;
+    }
 }
