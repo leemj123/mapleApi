@@ -1,6 +1,10 @@
 package com.henein.mapleApi.chess;
 
+import com.henein.mapleApi.error.ErrorCode;
+import com.henein.mapleApi.error.ErrorEntity;
+import com.henein.mapleApi.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -8,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class GameMainService {
     private final ChessBoardSetting chessBoardSetting;
@@ -18,7 +23,6 @@ public class GameMainService {
         TwoDBoard twoDBoard = new TwoDBoard();
         twoDBoard.inItBoard(chessBoardSetting.setting(twoDBoard.MAX_X, twoDBoard.MAX_Y));
 
-
         return twoDBoard.getBoard().stream().map(piece -> {
             PieceInfoDto dto = new PieceInfoDto(piece);
             redisService.savePiece(dto,roomId);
@@ -28,10 +32,12 @@ public class GameMainService {
 
     public PieceInfoDto movePiece(String roomId,PieceInfoDto pieceInfoDto) {
         Piece piece = bringPieceInfo(roomId, pieceInfoDto.getId());
-        if (!piece.isValidMove(pieceInfoDto,redisService.getAllInGamePieceList(roomId))) {
-            throw new RuntimeException();
+        if (piece.isValidMove(pieceInfoDto,redisService.getAllInGamePieceList(roomId))) {
+            return redisService.updatePiece(roomId, pieceInfoDto);
+        } else {
+            throw new ForbiddenException("잘못된 움직임", ErrorCode.FORBIDDEN_EXCEPTION);
         }
-        return redisService.updatePiece(roomId, pieceInfoDto);
+
     }
     public List<Point> getMoveValidList(String roomId,int id) {
         Piece piece = bringPieceInfo(roomId, id);
@@ -56,7 +62,7 @@ public class GameMainService {
             case 5: case 29:
                 return new King(redisService.checkPieceLocation(roomId, pieceId));
             default:
-                throw new RuntimeException();
+                throw new ForbiddenException("bringPieceInfo error",ErrorCode.FORBIDDEN_EXCEPTION);
 
         }
 
