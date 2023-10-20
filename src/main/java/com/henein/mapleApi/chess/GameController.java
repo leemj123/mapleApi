@@ -39,6 +39,7 @@ public class GameController {
     @Operation(summary = "기물 움직이기")
     @PostMapping("piece/move")
     public PieceInfoDto movePiece(@RequestHeader("Room")String roomId, @RequestBody PieceInfoDto pieceInfoDto) {
+        log.info("요청된 기물 id :" +pieceInfoDto.id+ "요청된 x :" +pieceInfoDto.getX()+"요청된 y :" +pieceInfoDto.getY());
         return gameMainService.movePiece(roomId,pieceInfoDto);
     }
     @Operation(summary = "기물 id로 기물 정보들 받아오기")
