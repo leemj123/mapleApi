@@ -2,7 +2,6 @@ package com.henein.mapleApi;
 
 import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
-import com.henein.mapleApi.dto.ChessDto;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,16 +46,16 @@ public class CubeController {
 
         return result;
     }
-    @GetMapping()
-    public ChessDto a (){
-        ChessDto chessDto = new ChessDto();
-        log.info("들어왔어용");
-        return chessDto;
-    }
-    @PostMapping()
-    public String b(@RequestBody ChessDto chessDto) {
-        log.info(chessDto.getId() + "+" + chessDto.getX()+ "+" + chessDto.getY());
-        return "재욱아 너가 보낸것의 x,y 값은: " + (chessDto.getX()+ chessDto.getY());
-    }
+//    @GetMapping()
+//    public ChessDto a (){
+//        ChessDto chessDto = new ChessDto();
+//        log.info("들어왔어용");
+//        return chessDto;
+//    }
+//    @PostMapping()
+//    public String b(@RequestBody ChessDto chessDto) {
+//        log.info(chessDto.getId() + "+" + chessDto.getX()+ "+" + chessDto.getY());
+//        return "재욱아 너가 보낸것의 x,y 값은: " + (chessDto.getX()+ chessDto.getY());
+//    }
 
 }
