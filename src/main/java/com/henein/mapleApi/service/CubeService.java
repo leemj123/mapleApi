@@ -8,11 +8,9 @@ import com.henein.mapleApi.webFluxError.CustomException;
 import com.henein.mapleApi.webFluxError.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -34,24 +32,28 @@ import java.util.stream.Collectors;
 * */
 
 public class CubeService {
-    private final WebClient webClient;
+    //private final WebClient webClient;
 
     public Mono<Set<String>> getUserNameOnCube(UserMapleApi userMapleApi) {
         LocalDate targetDate = userMapleApi.getRecentDay();
         Set<String> userNamesList = new HashSet<>();
-        String url = "v1/histroy/cube?count=100&date=" + targetDate;
+        String url = "v1/history/cube?count=100&date=" + targetDate;
         AtomicInteger tryCount = new AtomicInteger(0); // 이 부분 클래스 끝에 설명있음
         return getUserNameOnDate(userMapleApi, targetDate, userNamesList, url, tryCount);
     }
     private Mono<Set<String>> getUserNameOnDate(UserMapleApi userMapleApi, LocalDate targetDate, Set<String> userNamesList, String url, AtomicInteger tryCount) {
-        if (targetDate.isBefore(userMapleApi.getPastDay()) || 50 < tryCount.get()) {
+        if (targetDate.isBefore(userMapleApi.getPastDay()) || 100 < tryCount.get()) {
             return Mono.just(userNamesList);
         }
         log.info("getUserNameOnDate 호출함!");
+        WebClient webClient = WebClient.builder()
+                .baseUrl("https://open.api.nexon.com/maplestory/")
+                .defaultHeader("x-nxopen-api-key", userMapleApi.getUserApi())
+                .build();
+                //create();
 
-        return this.webClient.get()
+        return webClient.get()
                 .uri(url)
-                .header("x-nxopen-api-key", userMapleApi.getUserApi())
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response ->
                         response.bodyToMono(ErrorResponse.class).flatMap(errorResponse ->
@@ -65,18 +67,18 @@ public class CubeService {
                             .collect(Collectors.toSet());
                     userNamesList.addAll(characterNames);
 
-                    if (nextCursor.isEmpty() || nextCursor.isBlank() ) {
+                    if (nextCursor == null ) {
                         //다음 커서가 없으면 날짜 +1일 해서 넘어감
-                        log.info("다음 커서가 없엉"+targetDate.toString());
-                        String nextUrl = "v1/histroy/cube?count=100&date=" + targetDate.minus(1, ChronoUnit.DAYS);
+                        log.info("다음 커서가 없엉"+ targetDate);
+                        String nextUrl = "v1/history/cube?count=100&date=" + targetDate.minus(1, ChronoUnit.DAYS);
                         LocalDate nextDate = targetDate.minus(1,ChronoUnit.DAYS);
                         tryCount.incrementAndGet();
                         return getUserNameOnDate(userMapleApi, nextDate, userNamesList, nextUrl, tryCount);
 
                     } else {
                         //커서가 있으면 커서로 이동
-                        log.info("커서 있엉!" + targetDate.toString());
-                        String nextUrl = "v1/histroy/cube?count=100&cursor=" + nextCursor;
+                        log.info("커서 있엉!" + targetDate);
+                        String nextUrl = "v1/history/cube?count=100&cursor=" + nextCursor;
                         tryCount.incrementAndGet();
                         return getUserNameOnDate(userMapleApi, targetDate, userNamesList, nextUrl, tryCount);
                     }
