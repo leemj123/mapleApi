@@ -1,5 +1,6 @@
 package com.henein.mapleApi.controller;
 
+import com.henein.mapleApi.dto.TestDto;
 import com.henein.mapleApi.service.CubeService;
 import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
@@ -47,16 +48,16 @@ public class CubeController {
 
         return result;
     }
-//    @GetMapping()
-//    public ChessDto a (){
-//        ChessDto chessDto = new ChessDto();
-//        log.info("들어왔어용");
-//        return chessDto;
-//    }
-//    @PostMapping()
-//    public String b(@RequestBody ChessDto chessDto) {
-//        log.info(chessDto.getId() + "+" + chessDto.getX()+ "+" + chessDto.getY());
-//        return "재욱아 너가 보낸것의 x,y 값은: " + (chessDto.getX()+ chessDto.getY());
-//    }
+    @GetMapping()
+    public TestDto a (@RequestParam(required = false)String string, @RequestParam(required = false) int num){
+        TestDto testDto = new TestDto();
+        log.info("come");
+        log.info(string);
+        log.info(String.valueOf(num));
+        testDto.setHello("박지훈");
+        testDto.setNumber(19980515);
+        testDto.setText("너가 준 URL 파라미터는: " + string + " 과 " + num +" 인듯 ㅋ.ㅋ");
+        return testDto;
+    }
 
 }
