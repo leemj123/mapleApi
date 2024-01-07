@@ -11,7 +11,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder
-                .baseUrl("https://public.api.nexon.com/openapi/maplestory/v1/") // 기본 URL 설정
+                .baseUrl("https://open.api.nexon.com/maplestory/") // 기본 URL 설정
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // 기본 헤더 설정
                 .build();
     }

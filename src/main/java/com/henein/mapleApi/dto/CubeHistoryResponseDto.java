@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 public class CubeHistoryResponseDto {
-    private List<UserNameResponseDto> cube_histories;
     private String next_cursor;
+    private List<UserNameResponseDto> cube_history;
 }
