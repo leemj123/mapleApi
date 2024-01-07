@@ -1,5 +1,6 @@
-package com.henein.mapleApi;
+package com.henein.mapleApi.controller;
 
+import com.henein.mapleApi.service.CubeService;
 import com.henein.mapleApi.dto.UserMapleApi;
 import com.henein.mapleApi.dto.UserNameResponseDto;
 import lombok.RequiredArgsConstructor;
