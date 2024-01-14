@@ -41,7 +41,7 @@ public class NexonApiController {
     }
 
     //복수 요청
-    @GetMapping("/character/multiple")
+    @PostMapping("/character/multiple")
     public Mono<List<CharacterBasic>> getCharInfoListWithOcid (@RequestParam String key, @RequestBody CharRefreshRequestDto charRefreshRequestDto) {
         if (!key.matches(apiKey))
             throw new RuntimeException();
