@@ -29,7 +29,7 @@ public class CharacterService {
                 .flatMap(result -> this.getOneCharInfoWithOcid((String) result.get("ocid")));
     }
     public Mono<CharacterBasic> getOneCharInfoWithOcid(String ocid)  {
-        String api = "character/basic?ocid="+ocid+"&date="+ LocalDate.now().minusDays(1); //오늘의 바로 전날을 타겟
+        String api = "character/basic?ocid="+ocid+"&date="+ LocalDate.now().minusDays(2); //오늘의 바로 전날을 타겟
 
         return this.webClient.get()
                 .uri(api)
