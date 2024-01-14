@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -32,8 +31,8 @@ import java.util.stream.Collectors;
 * */
 
 public class CubeService {
-    //private final WebClient webClient;
 
+    //이름들 긁어오기
     public Mono<Set<String>> getUserNameOnCube(UserMapleApi userMapleApi) {
         LocalDate targetDate = userMapleApi.getRecentDay();
         Set<String> userNamesList = new HashSet<>();
@@ -41,6 +40,7 @@ public class CubeService {
         AtomicInteger tryCount = new AtomicInteger(0); // 이 부분 클래스 끝에 설명있음
         return getUserNameOnDate(userMapleApi, targetDate, userNamesList, url, tryCount);
     }
+    //이름들 긁어오기 재귀
     private Mono<Set<String>> getUserNameOnDate(UserMapleApi userMapleApi, LocalDate targetDate, Set<String> userNamesList, String url, AtomicInteger tryCount) {
         if (targetDate.isBefore(userMapleApi.getPastDay()) || 100 < tryCount.get()) {
             return Mono.just(userNamesList);
@@ -50,14 +50,14 @@ public class CubeService {
                 .baseUrl("https://open.api.nexon.com/maplestory/")
                 .defaultHeader("x-nxopen-api-key", userMapleApi.getUserApi())
                 .build();
-                //create();
+        //create();
 
         return webClient.get()
                 .uri(url)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response ->
                         response.bodyToMono(ErrorResponse.class).flatMap(errorResponse ->
-                                Mono.error(new CustomException("Error: " +errorResponse.getError().getMessage())))
+                                Mono.error(new CustomException("Error: " + errorResponse.getError().getMessage())))
                 )
                 .bodyToMono(CubeHistoryResponseDto.class)
                 .flatMap(response -> {
@@ -67,11 +67,11 @@ public class CubeService {
                             .collect(Collectors.toSet());
                     userNamesList.addAll(characterNames);
 
-                    if (nextCursor == null ) {
+                    if (nextCursor == null) {
                         //다음 커서가 없으면 날짜 +1일 해서 넘어감
-                        log.info("다음 커서가 없엉"+ targetDate);
-                        String nextUrl = "v1/history/cube?count=100&date=" + targetDate.minus(1, ChronoUnit.DAYS);
-                        LocalDate nextDate = targetDate.minus(1,ChronoUnit.DAYS);
+                        log.info("다음 커서가 없엉" + targetDate);
+                        String nextUrl = "v1/history/cube?count=100&date=" + targetDate.minusDays(1);
+                        LocalDate nextDate = targetDate.minusDays(1);
                         tryCount.incrementAndGet();
                         return getUserNameOnDate(userMapleApi, nextDate, userNamesList, nextUrl, tryCount);
 
@@ -84,7 +84,7 @@ public class CubeService {
                     }
                 });
     }
-
+}
     /**
     * 위 코드에서  int tryCount = 0 ; tryCount += 1; 을 하지 못하는 이유
     *
@@ -98,69 +98,3 @@ public class CubeService {
     * */
 
 
-//    public Mono<Set<String>> getUserNameOnCube(UserMapleApi userMapleApi) {
-//
-//        LocalDate targetDate = userMapleApi.getRecentDay();
-//        Set<String> userNamesList = new HashSet<>();
-//
-//        //탐색할 날짜가 음수가 되지 않을때까지
-//        while (!(targetDate.isBefore(userMapleApi.getPastDay()))) {
-//            //webClient 설정
-//            String url = "v1/histroy/cube?count=100&date="+targetDate;
-//            log.info(String.valueOf(LocalTime.now()));
-//
-//            boolean cursor;
-//            do {
-//                Mono<Map<String,Object>> nexonApiResponse = this.webClient.get()
-//                        .uri(url)
-//                        .header(HttpHeaders.AUTHORIZATION, userMapleApi.getUserApi())
-//                        .retrieve()
-//                        .bodyToMono(CubeHistoryResponseDto.class)
-//                        .flatMap(response -> {
-//                            String nextCursor = response.getNext_cursor();
-//                            Set<String> characterNames = response.getCube_history().stream()
-//                                    .map(UserNameResponseDto::getCharacter_name)
-//                                    .collect(Collectors.toSet());
-//
-//                            Map<String, Object> resultResponse = new HashMap<>();
-//                            resultResponse.put("t1", characterNames);
-//                            resultResponse.put("t2", nextCursor);
-//
-//                            return Mono.just(resultResponse);
-//                        });
-//
-//                //횟수 증가
-//
-//                // Mono에서 직접 .get() 메서드를 사용하여 값을 추출할 수 없습니다. 대신, Mono의 결과를 처리하려면 리액티브 스트림의 연산을 사용해야 합니다.
-//                nexonApiResponse.subscribe(APIresult -> {
-//                    // 결과에 저장함
-//                    Set<String> characterNames = (Set<String>) APIresult.get("t1");
-//                    userNamesList.addAll(characterNames);
-//
-//                    if (APIresult.get("t2").equals("")) {
-//                        url = "v1/histroy/cube?count=100&cursor="+APIresult.get("t1");
-//                        cursor = true;
-//                    } else {
-//                        cursor = false;
-//                    }
-//
-//                });
-//                tryCount++;
-//
-//            } while(cursor && tryCount <= 50);
-//
-//            targetDate = targetDate.minus(1, ChronoUnit.DAYS);
-//        }
-//
-//        return Mono.just(userNamesList);
-//    }
-}
-/*
-* public class CubeService {
-    private final WebClient webClient;
-
-
-
-
-}
-* */
